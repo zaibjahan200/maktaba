@@ -7,6 +7,15 @@ const { createMemoryStore } = require('./store');
 const app = express();
 let store = null;
 
+function withTimeout(promise, timeoutMs, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(`${label} timed out after ${timeoutMs}ms`)), timeoutMs);
+    })
+  ]);
+}
+
 app.use(cors());
 app.use(express.json());
 
@@ -100,8 +109,10 @@ app.post('/api/returns/:id', async (req, res) => {
 });
 
 async function prepare() {
+  const initTimeoutMs = Number(process.env.DB_INIT_TIMEOUT_MS || 12000);
+
   try {
-    await ensureSchema(pool);
+    await withTimeout(ensureSchema(pool), initTimeoutMs, 'Database initialization');
     store = {
       mode: 'postgres',
       async health() {
