@@ -5,7 +5,7 @@ const { ensureSchema } = require('./db/schema');
 const { createMemoryStore } = require('./store');
 
 const app = express();
-let store = null;
+let store = createMemoryStore();
 
 function withTimeout(promise, timeoutMs, label) {
   return Promise.race([
@@ -240,7 +240,6 @@ async function prepare() {
     };
     return;
   } catch (error) {
-    store = createMemoryStore();
     console.warn('Postgres unavailable, using in-memory fallback for local development:', error.message);
   }
 }
