@@ -19,6 +19,10 @@ function withTimeout(promise, timeoutMs, label) {
 app.use(cors());
 app.use(express.json());
 
+app.get('/api/ping', (_req, res) => {
+  res.json({ ok: true, service: 'api', timestamp: new Date().toISOString() });
+});
+
 function toDashboardBook(row) {
   return {
     id: row.id,
