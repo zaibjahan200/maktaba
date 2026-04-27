@@ -4,7 +4,9 @@ function buildPoolConfig() {
   const sharedPoolConfig = {
     connectionTimeoutMillis: Number(process.env.PGCONNECT_TIMEOUT_MS || 8000),
     idleTimeoutMillis: Number(process.env.PGIDLE_TIMEOUT_MS || 30000),
-    max: Number(process.env.PGPOOL_MAX || 5)
+    max: Number(process.env.PGPOOL_MAX || 5),
+    query_timeout: Number(process.env.PGQUERY_TIMEOUT_MS || 10000),
+    statement_timeout: Number(process.env.PGSTATEMENT_TIMEOUT_MS || 10000)
   };
 
   if (process.env.DATABASE_URL) {
